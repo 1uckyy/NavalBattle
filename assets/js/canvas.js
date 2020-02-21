@@ -1,6 +1,9 @@
 var canvas = document.getElementById("canvas");
 var context = canvas.getContext("2d");
 
+//supporting array
+var infoCells = [];
+
 //drawing settings
 context.lineWidth = 3;
 context.fillStyle = "blue";
@@ -31,14 +34,12 @@ function gorizLines() {
 vertLines();
 gorizLines();
 
-//supporting array
-var freeCells = [];
-for(var i=0; i<100;i++)
-    freeCells.push(i);
+//three cells ship
+context.fillRect(3,3+33*2,30,30);
+context.fillRect(3,3+33*3,30,30);
+context.fillRect(3,3+33*4,30,30);
 
-context.fillRect(3,3,30,30);
-
-//трёхклеточный корабль
+//four cells ship
 context.fillRect(3,3+33*6,30,30);
 context.fillRect(3,3+33*7,30,30);
 context.fillRect(3,3+33*8,30,30);
@@ -53,23 +54,66 @@ function randomInteger(min, max) {
 
 var randBtn = document.getElementById("randBtn");
 randBtn.onclick = function() {
+    //clear canvas
     context.clearRect(0, 0, canvas.width, canvas.height);
+
+    //refresh supporting array
+    infoCells = [];
+    for(var i=0; i<10; i++) {
+        infoCells[i]= [];
+        for(var j=0; j<10; j++)
+            infoCells[i][j] = 0;
+    }
+
+    //grid drawing
     vertLines();
     gorizLines();
-    var dim = randomInteger(0,1);
-    if(dim==0) {
-        var x = randomInteger(0,6);
-        var y = randomInteger(0,9);
-        context.fillRect(3+33*x,3+33*y,30,30);
-        context.fillRect(3+33*(x+1),3+33*y,30,30);
-        context.fillRect(3+33*(x+2),3+33*y,30,30);
-        context.fillRect(3+33*(x+3),3+33*y,30,30);
-    } else {
+
+    //FOUR CELLS SHIP
+    //axis selection
+    var axis = randomInteger(0,1);
+    //horiz ship
+    if(axis==0) {
+        //random start cell
         var x = randomInteger(0,9);
         var y = randomInteger(0,6);
-        context.fillRect(3+33*x,3+33*y,30,30);
-        context.fillRect(3+33*x,3+33*(y+1),30,30);
-        context.fillRect(3+33*x,3+33*(y+2),30,30);
-        context.fillRect(3+33*x,3+33*(y+3),30,30);
+
+        //locked cells
+        for(var i=0; i<6; i++)
+            for(var j=0; j<3; j++)
+                if(!(x==0 && j==0 || x==9 && j==2 || y==0 && i==0 || y==6 && i==5))
+                    infoCells[x-1+j][y-1+i] = 1;
+
+        //drawimg ship
+        for(var i=0; i<4; i++)
+            context.fillRect(3+33*(y+i),3+33*x,30,30);
+    } 
+    //vert ship
+    else {
+        //random start cell
+        var y = randomInteger(0,9);
+        var x = randomInteger(0,6);
+
+        //locked cells
+        for(var j=0; j<6; j++)
+            for(var i=0; i<3; i++)
+                if(!(x==0 && j==0 || x==6 && j==5 || y==0 && i==0 || y==9 && i==2))
+                    infoCells[x-1+j][y-1+i] = 1;
+
+        //drawimg ship
+        for(var i=0; i<4; i++)
+            context.fillRect(3+33*y,3+33*(x+i),30,30);
     }
+
+    //THREE CELLS SHIP
+    //axis selection
+    axis = randomInteger(0,1);
+    //possible cells
+    var possibleCells = [];
+    if(axis==0) {
+        for(var i=0;i<100;i++) {
+
+        }
+    }
+
 }
